@@ -396,8 +396,9 @@ describe('EventListenerTest', () => {
 					stub(console, 'log');
 				},
 				after: ({ assert: sinonAssert }) => {
-					sinonAssert.calledOnce(console.log); // eslint-disable-line no-console
-					sinonAssert.calledWithExactly(console.log, sinon.match(/^Response: /)); // eslint-disable-line no-console
+					sinonAssert.calledTwice(console.log); // eslint-disable-line
+					sinonAssert.calledWithExactly(console.log.getCall(0), 'Test case: Should print the response for an individual rule if printResponse is truthy'); // eslint-disable-line
+					sinonAssert.calledWithExactly(console.log.getCall(1), sinon.match(/^Response: /)); // eslint-disable-line
 				},
 				request: {
 					body: {
@@ -416,7 +417,7 @@ describe('EventListenerTest', () => {
 					spy(console, 'log');
 				},
 				after: ({ assert: sinonAssert }) => {
-					sinonAssert.notCalled(console.log); // eslint-disable-line no-console
+					sinonAssert.notCalled(console.log); // eslint-disable-line
 				},
 				request: {
 					body: {
@@ -437,8 +438,9 @@ describe('EventListenerTest', () => {
 					stub(console, 'log');
 				},
 				after: ({ assert: sinonAssert }) => {
-					sinonAssert.calledOnce(console.log); // eslint-disable-line no-console
-					sinonAssert.calledWithExactly(console.log, sinon.match(/^Response: /)); // eslint-disable-line no-console
+					sinonAssert.calledTwice(console.log); // eslint-disable-line
+					sinonAssert.calledWithExactly(console.log.getCall(0), 'Test case: Should print the response for the whole execution if printResponse is truthy'); // eslint-disable-line
+					sinonAssert.calledWithExactly(console.log.getCall(1), sinon.match(/^Response: /)); // eslint-disable-line
 				},
 				request: {
 					body: {
