@@ -376,8 +376,83 @@ describe('EventListenerTest', () => {
 						'my-cookie': 'and-value'
 					}
 				}
+			},
+			{
+				description: 'Should fail for malformed event',
+				request: {
+					body: {
+						service: 'some-service',
+						entity: 'some-entity'
+					}
+				},
+				response: {
+					code: 400
+				}
+			},
+			{
+				description: 'Should print the response for an individual rule if printResponse is truthy',
+				printResponse: true,
+				before: ({ stub }) => {
+					stub(console, 'log');
+				},
+				after: ({ assert: sinonAssert }) => {
+					sinonAssert.calledOnce(console.log); // eslint-disable-line no-console
+					sinonAssert.calledWithExactly(console.log, sinon.match(/^Response: /)); // eslint-disable-line no-console
+				},
+				request: {
+					body: {
+						service: 'some-service',
+						entity: 'some-entity'
+					}
+				},
+				response: {
+					code: 400
+				}
+			},
+			{
+				description: 'Should not print the response for an individual rule if printResponse is falsy',
+				printResponse: false,
+				before: ({ spy }) => {
+					spy(console, 'log');
+				},
+				after: ({ assert: sinonAssert }) => {
+					sinonAssert.notCalled(console.log); // eslint-disable-line no-console
+				},
+				request: {
+					body: {
+						service: 'some-service',
+						entity: 'some-entity'
+					}
+				},
+				response: {
+					code: 400
+				}
 			}
 		]);
+
+		EventListenerTest(SessionHandler, [
+			{
+				description: 'Should print the response for the whole execution if printResponse is truthy',
+				before: ({ stub }) => {
+					stub(console, 'log');
+				},
+				after: ({ assert: sinonAssert }) => {
+					sinonAssert.calledOnce(console.log); // eslint-disable-line no-console
+					sinonAssert.calledWithExactly(console.log, sinon.match(/^Response: /)); // eslint-disable-line no-console
+				},
+				request: {
+					body: {
+						service: 'some-service',
+						entity: 'some-entity'
+					}
+				},
+				response: {
+					code: 400
+				}
+			}
+		], {
+			printResponse: true
+		});
 
 		EventListenerTest(SessionHandler, [
 			{
