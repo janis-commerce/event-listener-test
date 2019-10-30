@@ -4,6 +4,8 @@ const assert = require('assert');
 
 const sinon = require('sinon');
 
+const { ApiResponse } = require('@janiscommerce/sls-api-response');
+
 const {
 	EventListener,
 	ServerlessHandler
@@ -291,71 +293,11 @@ describe('EventListenerTest', () => {
 			});
 		});
 
-		it('Should throw if a rule response is not an object', () => {
+		it('Should throw if a rule responseCode is not a number', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
 				event,
-				response: 'InvalidResponse'
-			}]), {
-				code: EventListenerTestError.codes.INVALID_RULES
-			});
-		});
-
-		it('Should throw if a rule response code is not a number', () => {
-			assert.throws(() => EventListenerTest(MyHandler, [{
-				description: 'Valid description',
-				event,
-				response: {
-					code: 'InvalidResponseCode'
-				}
-			}]), {
-				code: EventListenerTestError.codes.INVALID_RULES
-			});
-		});
-
-		it('Should throw if a rule response headers are not an object', () => {
-			assert.throws(() => EventListenerTest(MyHandler, [{
-				description: 'Valid description',
-				event,
-				response: {
-					headers: ['InvalidResponseHeaders']
-				}
-			}]), {
-				code: EventListenerTestError.codes.INVALID_RULES
-			});
-		});
-
-		it('Should throw if a rule response strictHeaders are not an object', () => {
-			assert.throws(() => EventListenerTest(MyHandler, [{
-				description: 'Valid description',
-				event,
-				response: {
-					strictHeaders: ['InvalidResponseStrictHeaders']
-				}
-			}]), {
-				code: EventListenerTestError.codes.INVALID_RULES
-			});
-		});
-
-		it('Should throw if a rule response cookies are not an object', () => {
-			assert.throws(() => EventListenerTest(MyHandler, [{
-				description: 'Valid description',
-				event,
-				response: {
-					cookies: ['InvalidResponseCookies']
-				}
-			}]), {
-				code: EventListenerTestError.codes.INVALID_RULES
-			});
-		});
-
-		it('Should throw if a rule response strictCookies are not an object', () => {
-			assert.throws(() => EventListenerTest(MyHandler, [{
-				description: 'Valid description',
-				event,
-				response: {
-					strictCookies: ['InvalidResponseStrictCookies']
-				}
+				responseCode: 'InvalidResponseCode'
 			}]), {
 				code: EventListenerTestError.codes.INVALID_RULES
 			});
@@ -365,7 +307,6 @@ describe('EventListenerTest', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
 				event,
-				response: {},
 				before: 'InvalidBeforeHook'
 			}]), {
 				code: EventListenerTestError.codes.INVALID_RULES
@@ -376,7 +317,6 @@ describe('EventListenerTest', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
 				event,
-				response: {},
 				after: 'InvalidAfterHook'
 			}]), {
 				code: EventListenerTestError.codes.INVALID_RULES
@@ -386,8 +326,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if the before hook is not a function', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				event,
-				response: {}
+				event
 			}], {
 				before: 'InvalidBeforeHook'
 			}), {
@@ -398,8 +337,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if the after hook is not a function', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				event,
-				response: {}
+				event
 			}], {
 				after: 'InvalidAfterHook'
 			}), {
@@ -413,54 +351,7 @@ describe('EventListenerTest', () => {
 		EventListenerTest(MyHandler, [
 			{
 				description: 'Should pass for a basic rule',
-				event,
-				response: {}
-			},
-			{
-				description: 'Should validate response body',
-				event,
-				response: {
-					body: {
-						foo: 1
-					}
-				}
-			},
-			{
-				description: 'Should validate response partial headers',
-				event,
-				response: {
-					headers: {
-						'x-foo': 'bar'
-					}
-				}
-			},
-			{
-				description: 'Should validate response strict headers',
-				event,
-				response: {
-					strictHeaders: {
-						'x-foo': 'bar',
-						'x-bar': 'baz'
-					}
-				}
-			},
-			{
-				description: 'Should validate response partial cookies',
-				event,
-				response: {
-					cookies: {
-						'my-cookie': 'and-value'
-					}
-				}
-			},
-			{
-				description: 'Should validate response strict cookies',
-				event,
-				response: {
-					strictCookies: {
-						'my-cookie': 'and-value'
-					}
-				}
+				event
 			},
 			{
 				description: 'Should print the response for an individual rule if printResponse is truthy',
@@ -473,8 +364,7 @@ describe('EventListenerTest', () => {
 					sinonAssert.calledWithExactly(console.log.getCall(0), 'Test case: Should print the response for an individual rule if printResponse is truthy'); // eslint-disable-line
 					sinonAssert.calledWithExactly(console.log.getCall(1), sinon.match(/^Response: /)); // eslint-disable-line
 				},
-				event,
-				response: {}
+				event
 			},
 			{
 				description: 'Should not print the response for an individual rule if printResponse is falsy',
@@ -485,8 +375,7 @@ describe('EventListenerTest', () => {
 				after: ({ assert: sinonAssert }) => {
 					sinonAssert.notCalled(console.log); // eslint-disable-line
 				},
-				event,
-				response: {}
+				event
 			}
 		]);
 
@@ -494,9 +383,7 @@ describe('EventListenerTest', () => {
 			{
 				description: 'Should fail if status code is not OK',
 				event,
-				response: {
-					code: 400
-				}
+				responseCode: 400
 			}
 		]);
 
@@ -511,8 +398,7 @@ describe('EventListenerTest', () => {
 					sinonAssert.calledWithExactly(console.log.getCall(0), 'Test case: Should print the response for the whole execution if printResponse is truthy'); // eslint-disable-line
 					sinonAssert.calledWithExactly(console.log.getCall(1), sinon.match(/^Response: /)); // eslint-disable-line
 				},
-				event,
-				response: {}
+				event
 			}
 		], {
 			printResponse: true
@@ -523,12 +409,14 @@ describe('EventListenerTest', () => {
 				description: 'Should set the default session if it\'s defined as true',
 				session: true,
 				event,
-				response: {
-					body: {
-						clientId: 1,
-						clientCode: 'defaultClient',
-						userId: 2
-					}
+				after: ({ assert: sinonAssert }) => {
+					sinonAssert.calledWithExactly(ApiResponse.send, sinon.match({
+						body: {
+							clientId: 1,
+							clientCode: 'defaultClient',
+							userId: 2
+						}
+					}));
 				}
 			},
 			{
@@ -538,25 +426,29 @@ describe('EventListenerTest', () => {
 					clientCode: 'customClient'
 				},
 				event,
-				response: {
-					body: {
-						clientId: 8,
-						clientCode: 'customClient',
-						userId: undefined
-					}
+				after: ({ assert: sinonAssert }) => {
+					sinonAssert.calledWithExactly(ApiResponse.send, sinon.match({
+						body: {
+							clientId: 8,
+							clientCode: 'customClient',
+							userId: undefined
+						}
+					}));
 				}
 			},
 			{
 				description: 'Should mock the client db get by default',
 				session: true,
 				event,
-				response: {
-					body: {
-						client: {
-							id: 1,
-							code: 'defaultClient'
+				after: ({ assert: sinonAssert }) => {
+					sinonAssert.calledWithExactly(ApiResponse.send, sinon.match({
+						body: {
+							client: {
+								id: 1,
+								code: 'defaultClient'
+							}
 						}
-					}
+					}));
 				}
 			},
 			{
@@ -567,13 +459,15 @@ describe('EventListenerTest', () => {
 					code: 'someOtherClient'
 				},
 				event,
-				response: {
-					body: {
-						client: {
-							id: 5,
-							code: 'someOtherClient'
+				after: ({ assert: sinonAssert }) => {
+					sinonAssert.calledWithExactly(ApiResponse.send, sinon.match({
+						body: {
+							client: {
+								id: 5,
+								code: 'someOtherClient'
+							}
 						}
-					}
+					}));
 				}
 			}
 		]);
@@ -590,7 +484,6 @@ describe('EventListenerTest', () => {
 			{
 				description: 'Should call the rule before and after hooks once',
 				event,
-				response: {},
 				before,
 				after
 			}
