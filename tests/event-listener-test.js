@@ -46,6 +46,24 @@ class SessionListener extends EventListener {
 
 const SessionHandler = (...args) => ServerlessHandler.handle(SessionListener, ...args);
 
+class ErrorListener extends EventListener {
+
+	async process() {
+
+		this
+			.setCode(400)
+			.setBody({});
+	}
+}
+
+const ErrorHandler = (...args) => ServerlessHandler.handle(ErrorListener, ...args);
+
+const event = {
+	service: 'some-service',
+	entity: 'some-entity',
+	event: 'some-event'
+};
+
 describe('EventListenerTest', () => {
 
 	describe('Arguments validation', () => {
@@ -132,7 +150,7 @@ describe('EventListenerTest', () => {
 			});
 		});
 
-		it('Should throw if a rule request is not set', () => {
+		it('Should throw if a rule event is not set', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description'
 			}]), {
@@ -140,10 +158,113 @@ describe('EventListenerTest', () => {
 			});
 		});
 
-		it('Should throw if a rule request is not an object', () => {
+		it('Should throw if a rule event is not an object', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: 'InvalidRequest'
+				event: 'InvalidEvent'
+			}]), {
+				code: EventListenerTestError.codes.INVALID_RULES
+			});
+		});
+
+		it('Should throw if a rule event service is not defined', () => {
+			assert.throws(() => EventListenerTest(MyHandler, [{
+				description: 'Valid description',
+				event: {
+					entity: 'some-entity',
+					event: 'some-event'
+				}
+			}]), {
+				code: EventListenerTestError.codes.INVALID_RULES
+			});
+		});
+
+		it('Should throw if a rule event service is not a string', () => {
+			assert.throws(() => EventListenerTest(MyHandler, [{
+				description: 'Valid description',
+				event: {
+					service: ['InvalidService'],
+					entity: 'some-entity',
+					event: 'some-event'
+				}
+			}]), {
+				code: EventListenerTestError.codes.INVALID_RULES
+			});
+		});
+
+		it('Should throw if a rule event entity is not defined', () => {
+			assert.throws(() => EventListenerTest(MyHandler, [{
+				description: 'Valid description',
+				event: {
+					service: 'some-service',
+					event: 'some-event'
+				}
+			}]), {
+				code: EventListenerTestError.codes.INVALID_RULES
+			});
+		});
+
+		it('Should throw if a rule event entity is not a string', () => {
+			assert.throws(() => EventListenerTest(MyHandler, [{
+				description: 'Valid description',
+				event: {
+					service: 'some-service',
+					entity: ['InvalidEntity'],
+					event: 'some-event'
+				}
+			}]), {
+				code: EventListenerTestError.codes.INVALID_RULES
+			});
+		});
+
+		it('Should throw if a rule event name is not defined', () => {
+			assert.throws(() => EventListenerTest(MyHandler, [{
+				description: 'Valid description',
+				event: {
+					service: 'some-service',
+					entity: 'some-entity'
+				}
+			}]), {
+				code: EventListenerTestError.codes.INVALID_RULES
+			});
+		});
+
+		it('Should throw if a rule event name is not a string', () => {
+			assert.throws(() => EventListenerTest(MyHandler, [{
+				description: 'Valid description',
+				event: {
+					service: 'some-service',
+					entity: 'some-entity',
+					event: ['InvalidEvent']
+				}
+			}]), {
+				code: EventListenerTestError.codes.INVALID_RULES
+			});
+		});
+
+		it('Should throw if a rule event client is not a string', () => {
+			assert.throws(() => EventListenerTest(MyHandler, [{
+				description: 'Valid description',
+				event: {
+					client: ['InvalidClient'],
+					service: 'some-service',
+					entity: 'some-entity',
+					event: 'some-event'
+				}
+			}]), {
+				code: EventListenerTestError.codes.INVALID_RULES
+			});
+		});
+
+		it('Should throw if a rule event id is not a string nor a number', () => {
+			assert.throws(() => EventListenerTest(MyHandler, [{
+				description: 'Valid description',
+				event: {
+					id: ['InvalidId'],
+					service: 'some-service',
+					entity: 'some-entity',
+					event: 'some-event'
+				}
 			}]), {
 				code: EventListenerTestError.codes.INVALID_RULES
 			});
@@ -152,7 +273,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if a rule session is not a boolean nor an object', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: {},
+				event,
 				session: 'Invalid session'
 			}]), {
 				code: EventListenerTestError.codes.INVALID_RULES
@@ -162,7 +283,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if a rule client is not an object', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: {},
+				event,
 				session: true,
 				client: 'Invalid client'
 			}]), {
@@ -173,7 +294,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if a rule response is not an object', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: {},
+				event,
 				response: 'InvalidResponse'
 			}]), {
 				code: EventListenerTestError.codes.INVALID_RULES
@@ -183,7 +304,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if a rule response code is not a number', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: {},
+				event,
 				response: {
 					code: 'InvalidResponseCode'
 				}
@@ -195,7 +316,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if a rule response headers are not an object', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: {},
+				event,
 				response: {
 					headers: ['InvalidResponseHeaders']
 				}
@@ -207,7 +328,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if a rule response strictHeaders are not an object', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: {},
+				event,
 				response: {
 					strictHeaders: ['InvalidResponseStrictHeaders']
 				}
@@ -219,7 +340,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if a rule response cookies are not an object', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: {},
+				event,
 				response: {
 					cookies: ['InvalidResponseCookies']
 				}
@@ -231,7 +352,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if a rule response strictCookies are not an object', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: {},
+				event,
 				response: {
 					strictCookies: ['InvalidResponseStrictCookies']
 				}
@@ -243,7 +364,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if a rule before hook is not a function', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: {},
+				event,
 				response: {},
 				before: 'InvalidBeforeHook'
 			}]), {
@@ -254,7 +375,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if a rule after hook is not a function', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: {},
+				event,
 				response: {},
 				after: 'InvalidAfterHook'
 			}]), {
@@ -265,7 +386,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if the before hook is not a function', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: {},
+				event,
 				response: {}
 			}], {
 				before: 'InvalidBeforeHook'
@@ -277,7 +398,7 @@ describe('EventListenerTest', () => {
 		it('Should throw if the after hook is not a function', () => {
 			assert.throws(() => EventListenerTest(MyHandler, [{
 				description: 'Valid description',
-				request: {},
+				event,
 				response: {}
 			}], {
 				after: 'InvalidAfterHook'
@@ -292,24 +413,12 @@ describe('EventListenerTest', () => {
 		EventListenerTest(MyHandler, [
 			{
 				description: 'Should pass for a basic rule',
-				request: {
-					body: {
-						service: 'some-service',
-						entity: 'some-entity',
-						event: 'some-event'
-					}
-				},
+				event,
 				response: {}
 			},
 			{
 				description: 'Should validate response body',
-				request: {
-					body: {
-						service: 'some-service',
-						entity: 'some-entity',
-						event: 'some-event'
-					}
-				},
+				event,
 				response: {
 					body: {
 						foo: 1
@@ -318,13 +427,7 @@ describe('EventListenerTest', () => {
 			},
 			{
 				description: 'Should validate response partial headers',
-				request: {
-					body: {
-						service: 'some-service',
-						entity: 'some-entity',
-						event: 'some-event'
-					}
-				},
+				event,
 				response: {
 					headers: {
 						'x-foo': 'bar'
@@ -333,13 +436,7 @@ describe('EventListenerTest', () => {
 			},
 			{
 				description: 'Should validate response strict headers',
-				request: {
-					body: {
-						service: 'some-service',
-						entity: 'some-entity',
-						event: 'some-event'
-					}
-				},
+				event,
 				response: {
 					strictHeaders: {
 						'x-foo': 'bar',
@@ -349,13 +446,7 @@ describe('EventListenerTest', () => {
 			},
 			{
 				description: 'Should validate response partial cookies',
-				request: {
-					body: {
-						service: 'some-service',
-						entity: 'some-entity',
-						event: 'some-event'
-					}
-				},
+				event,
 				response: {
 					cookies: {
 						'my-cookie': 'and-value'
@@ -364,29 +455,11 @@ describe('EventListenerTest', () => {
 			},
 			{
 				description: 'Should validate response strict cookies',
-				request: {
-					body: {
-						service: 'some-service',
-						entity: 'some-entity',
-						event: 'some-event'
-					}
-				},
+				event,
 				response: {
 					strictCookies: {
 						'my-cookie': 'and-value'
 					}
-				}
-			},
-			{
-				description: 'Should fail for malformed event',
-				request: {
-					body: {
-						service: 'some-service',
-						entity: 'some-entity'
-					}
-				},
-				response: {
-					code: 400
 				}
 			},
 			{
@@ -400,15 +473,8 @@ describe('EventListenerTest', () => {
 					sinonAssert.calledWithExactly(console.log.getCall(0), 'Test case: Should print the response for an individual rule if printResponse is truthy'); // eslint-disable-line
 					sinonAssert.calledWithExactly(console.log.getCall(1), sinon.match(/^Response: /)); // eslint-disable-line
 				},
-				request: {
-					body: {
-						service: 'some-service',
-						entity: 'some-entity'
-					}
-				},
-				response: {
-					code: 400
-				}
+				event,
+				response: {}
 			},
 			{
 				description: 'Should not print the response for an individual rule if printResponse is falsy',
@@ -419,12 +485,15 @@ describe('EventListenerTest', () => {
 				after: ({ assert: sinonAssert }) => {
 					sinonAssert.notCalled(console.log); // eslint-disable-line
 				},
-				request: {
-					body: {
-						service: 'some-service',
-						entity: 'some-entity'
-					}
-				},
+				event,
+				response: {}
+			}
+		]);
+
+		EventListenerTest(ErrorHandler, [
+			{
+				description: 'Should fail if status code is not OK',
+				event,
 				response: {
 					code: 400
 				}
@@ -442,15 +511,8 @@ describe('EventListenerTest', () => {
 					sinonAssert.calledWithExactly(console.log.getCall(0), 'Test case: Should print the response for the whole execution if printResponse is truthy'); // eslint-disable-line
 					sinonAssert.calledWithExactly(console.log.getCall(1), sinon.match(/^Response: /)); // eslint-disable-line
 				},
-				request: {
-					body: {
-						service: 'some-service',
-						entity: 'some-entity'
-					}
-				},
-				response: {
-					code: 400
-				}
+				event,
+				response: {}
 			}
 		], {
 			printResponse: true
@@ -460,13 +522,7 @@ describe('EventListenerTest', () => {
 			{
 				description: 'Should set the default session if it\'s defined as true',
 				session: true,
-				request: {
-					body: {
-						service: 'some-service1',
-						entity: 'some-entity',
-						event: 'some-event'
-					}
-				},
+				event,
 				response: {
 					body: {
 						clientId: 1,
@@ -481,13 +537,7 @@ describe('EventListenerTest', () => {
 					clientId: 8,
 					clientCode: 'customClient'
 				},
-				request: {
-					body: {
-						service: 'some-service1',
-						entity: 'some-entity',
-						event: 'some-event'
-					}
-				},
+				event,
 				response: {
 					body: {
 						clientId: 8,
@@ -499,13 +549,7 @@ describe('EventListenerTest', () => {
 			{
 				description: 'Should mock the client db get by default',
 				session: true,
-				request: {
-					body: {
-						service: 'some-service1',
-						entity: 'some-entity',
-						event: 'some-event'
-					}
-				},
+				event,
 				response: {
 					body: {
 						client: {
@@ -522,13 +566,7 @@ describe('EventListenerTest', () => {
 					id: 5,
 					code: 'someOtherClient'
 				},
-				request: {
-					body: {
-						service: 'some-service1',
-						entity: 'some-entity',
-						event: 'some-event'
-					}
-				},
+				event,
 				response: {
 					body: {
 						client: {
@@ -551,13 +589,7 @@ describe('EventListenerTest', () => {
 		EventListenerTest(MyHandler, [
 			{
 				description: 'Should call the rule before and after hooks once',
-				request: {
-					body: {
-						service: 'some-service',
-						entity: 'some-entity',
-						event: 'some-event'
-					}
-				},
+				event,
 				response: {},
 				before,
 				after
