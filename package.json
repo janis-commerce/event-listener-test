@@ -30,5 +30,11 @@
   ],
   "directories": {
     "test": "tests"
+  },
+  "dependencies": {
+    "@janiscommerce/api-session": "^1.2.1",
+    "@janiscommerce/event-listener": "^1.0.2",
+    "@janiscommerce/sls-api-response": "^1.2.1",
+    "sinon": "^7.5.0"
   }
 }
