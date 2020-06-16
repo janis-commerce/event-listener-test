@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.0.0] - 2020-06-16
+### Changed
+- API Session upgraded to v2 (validates locations) (**BREAKING CHANGE**)
+- Updated dependencies `@janiscommerce/event-listener`, `sinon`, other devDependencies
+
+### Removed
+- `package-lock.json` file
+
 ## [1.0.0] - 2019-10-30
 ### Added
 - Package inited

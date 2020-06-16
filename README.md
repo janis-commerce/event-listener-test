@@ -8,6 +8,14 @@
 ```sh
 npm install --save-dev @janiscommerce/event-listener-test
 ```
+### ⚠️ **Breaking changes from version *2.0.0*** ⚠️
+*Since 2.0.0*
+
+Upgraded [API Session](https://www.npmjs.com/package/@janiscommerce/api-session) dependency to `^2.x.x`
+
+The session of an api allows you to validates **locations** instead of **stores**
+
+For more information see [API Session](https://www.npmjs.com/package/@janiscommerce/api-session)
 
 ## API
 

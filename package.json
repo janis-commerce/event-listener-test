@@ -1,7 +1,7 @@
 {
   "name": "@janiscommerce/event-listener-test",
-  "version": "1.0.0",
-  "description": "",
+  "version": "2.0.0",
+  "description": "A package for testing Event Listeners developed with @janiscommerce/event-listener",
   "main": "lib/event-listener-test.js",
   "scripts": {
     "test": "export TEST_ENV=true; mocha --exit -R nyan --recursive tests/",
@@ -19,11 +19,11 @@
   "homepage": "https://github.com/janis-commerce/event-listener-test.git#readme",
   "devDependencies": {
     "husky": "^2.4.1",
-    "eslint": "^5.16.0",
+    "eslint": "^7.2.0",
     "eslint-config-airbnb-base": "^13.1.0",
     "eslint-plugin-import": "^2.17.3",
-    "mocha": "^5.2.0",
-    "nyc": "^13.1.0"
+    "mocha": "^8.0.1",
+    "nyc": "^15.1.0"
   },
   "files": [
     "lib/"
@@ -32,9 +32,9 @@
     "test": "tests"
   },
   "dependencies": {
-    "@janiscommerce/api-session": "^1.2.1",
-    "@janiscommerce/event-listener": "^1.0.2",
+    "@janiscommerce/api-session": "^2.0.0",
+    "@janiscommerce/event-listener": "^2.0.0",
     "@janiscommerce/sls-api-response": "^1.2.1",
-    "sinon": "^7.5.0"
+    "sinon": "^9.0.2"
   }
 }
