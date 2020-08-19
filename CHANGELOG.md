@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.0] - 2020-08-19
+### Added
+- `only` property added to test rules
+
 ## [2.0.0] - 2020-06-16
 ### Changed
 - API Session upgraded to v2 (validates locations) (**BREAKING CHANGE**)
