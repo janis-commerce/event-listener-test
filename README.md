@@ -1,21 +1,14 @@
 # Event Listener Test
 
-[![Build Status](https://travis-ci.org/janis-commerce/event-listener-test.svg?branch=master)](https://travis-ci.org/janis-commerce/event-listener-test)
+![Build Status](https://github.com/janis-commerce/event-listener-test/workflows/Build%20Status/badge.svg)
 [![Coverage Status](https://coveralls.io/repos/github/janis-commerce/event-listener-test/badge.svg?branch=master)](https://coveralls.io/github/janis-commerce/event-listener-test?branch=master)
+[![npm version](https://badge.fury.io/js/%40janiscommerce%2Fevent-listener-test.svg)](https://www.npmjs.com/package/@janiscommerce/event-listener-test)
 
 ## Installation
 
 ```sh
 npm install --save-dev @janiscommerce/event-listener-test
 ```
-### ⚠️ **Breaking changes from version *2.0.0*** ⚠️
-*Since 2.0.0*
-
-Upgraded [API Session](https://www.npmjs.com/package/@janiscommerce/api-session) dependency to `^2.x.x`
-
-The session of an api allows you to validates **locations** instead of **stores**
-
-For more information see [API Session](https://www.npmjs.com/package/@janiscommerce/api-session)
 
 ## API
 
