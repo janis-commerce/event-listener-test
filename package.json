@@ -1,6 +1,6 @@
 {
   "name": "@janiscommerce/event-listener-test",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "A package for testing Event Listeners developed with @janiscommerce/event-listener",
   "main": "lib/event-listener-test.js",
   "scripts": {

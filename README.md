@@ -26,6 +26,7 @@ npm install --save-dev @janiscommerce/event-listener-test
 A rule is an object that defines a test case. It has the following properties:
 
 * `description`: <_string_> **Required**. The test case description.
+* `only`: <_boolean_> If it's set to true, only this rule will be executed. Useful to debug when a test fails.
 * `event`: <_object_> **Required**. The JANIS event to test.
 * `session`: <_boolean|object_> Indicates if the test should inject a session. If it's `true` the a default session is injected. If it's an object, it's injected as a session.
 * `client`: <_object_> Used to mock the service client, injecting it in the session `client` getter. Only works if `session` is set.
