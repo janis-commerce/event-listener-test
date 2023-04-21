@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [4.0.0] - 2023-04-20
+### Changed
+- Updated `@janiscommerce/event-listener` to `4.x.x`
+
 ## [3.0.0] - 2020-08-27
 ### Added
 - GitHub Actions for build, coverage and publish
